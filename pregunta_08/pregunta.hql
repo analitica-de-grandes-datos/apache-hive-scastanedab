@@ -47,3 +47,14 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
     >>> Escriba su respuesta a partir de este punto <<<
 */
 
+DROP TABLE IF EXISTS pregunta;
+CREATE TABLE pregunta 
+AS 
+        SELECT c2 as letter, numbers
+        FROM tbl0
+        LATERAL VIEW EXPLODE(MAP_VALUES(c6)) tbl0 AS numbers;
+INSERT OVERWRITE LOCAL DIRECTORY './output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT letter, SUM(numbers)
+FROM pregunta
+GROUP BY letter;

@@ -46,3 +46,14 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
     >>> Escriba su respuesta a partir de este punto <<<
 */
 
+DROP TABLE IF EXISTS pregunta;
+CREATE TABLE pregunta 
+AS 
+        SELECT c1, c2, number
+        FROM tbl1 
+        LATERAL VIEW EXPLODE(c4) tbl1 AS c2,number;
+INSERT OVERWRITE LOCAL DIRECTORY './output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT tbl0.c1,tbl0.c2,pregunta.number
+FROM tbl0,pregunta
+WHERE tbl0.c1 = pregunta.c1 AND tbl0.c2 = pregunta.c2;
