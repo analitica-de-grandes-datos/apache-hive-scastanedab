@@ -15,6 +15,10 @@ Apache Hive se ejecutará en modo local (sin HDFS).
 Escriba el resultado a la carpeta `output` de directorio de trabajo.
 
 */
+/*
+    >>> Escriba su respuesta a partir de este punto <<<
+*/
+
 
 DROP TABLE IF EXISTS t0;
 CREATE TABLE t0 (
@@ -29,14 +33,12 @@ CREATE TABLE t0 (
         LINES TERMINATED BY '\n';
 LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 
-/*
-    >>> Escriba su respuesta a partir de este punto <<<
-*/
+CREATE TABLE data AS
+SELECT letras, key, value
+FROM (SELECT letras, c3 FROM t0 LATERAL VIEW EXPLODE(c2) t0 AS letras) data1
+LATERAL VIEW EXPLODE(c3) data1;
 
-INSERT OVERWRITE LOCAL DIRECTORY 'output'
+INSERT OVERWRITE LOCAL DIRECTORY './output'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-
-SELECT letra, letras, COUNT(letras) FROM t0
-LATERAL VIEW EXPLODE(c3) t0 AS letras, numeros
-LATERAL VIEW EXPLODE(c2) t0 AS letra
-GROUP BY letra, letras;
+SELECT letras, key, COUNT(1)
+FROM data GROUP BY letras, key;
