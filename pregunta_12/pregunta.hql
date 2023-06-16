@@ -38,7 +38,7 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 SELECT c2_element, c3_key, COUNT(1) AS count
 FROM (
-  SELECT c1, c3_key, c3_value, c2_elements
+  SELECT c1, c3_key, c3_value, c2_element
   FROM t0
   LATERAL VIEW explode(c3) unal AS c3_key, c3_value
   LATERAL VIEW explode(c2) c2_exp AS c2_element
