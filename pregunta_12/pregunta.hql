@@ -33,9 +33,10 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
     >>> Escriba su respuesta a partir de este punto <<<
 */
 
-CREATE TABLE tabla AS SELECT letter, claves, data
-FROM (SELECT letter, c3 FROM t0 LATERAL VIEW EXPLODE(c2) t0 AS letter) dat LATERAL VIEW EXPLODE(c3) dat;
-INSERT OVERWRITE DIRECTORY './output'
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 
-SELECT letter, claves, COUNT(1) FROM tabla GROUP BY letter, claves;
+SELECT letra, letras, COUNT(letras) FROM t0
+LATERAL VIEW EXPLODE(c3) t0 AS letras, numeros
+LATERAL VIEW EXPLODE(c2) t0 AS letra
+GROUP BY letra, letras;
