@@ -31,12 +31,14 @@ CREATE TABLE t0 (
         LINES TERMINATED BY '\n';
 LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 
-CREATE TABLE data AS
-SELECT letras, key, value
-FROM (SELECT letras, c3 FROM t0 LATERAL VIEW EXPLODE(c2) t0 AS letras) data1
-LATERAL VIEW EXPLODE(c3) data1;
+/*
+    >>> Escriba su respuesta a partir de este punto <<<
+*/
 
-INSERT OVERWRITE LOCAL DIRECTORY './output'
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-SELECT letras, key, COUNT(1)
-FROM data GROUP BY letras, key;
+SELECT t1.val, t2.key, count(*)
+FROM t0
+LATERAL VIEW EXPLODE(t0.c2) t1 AS val
+LATERAL VIEW EXPLODE(t0.c3) t2 AS key, cha
+GROUP BY t1.val, t2.key;
